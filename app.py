@@ -56,7 +56,11 @@ def preprocess(text):
   text = [s for s in text.split() if s.isalpha()]
   return " ".join(text)
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route('/')
+def hello():
+    return "hello world"  
+
+@app.route("/predict", methods=['GET'])
 def home():
   data = request.json['data']
   user_ans = data[0]["user_ans"]
@@ -73,5 +77,5 @@ def home():
   })
 
 
-  if __name__=='__main__':
-      app.run()
+if __name__=='__main__':
+    app.run()
