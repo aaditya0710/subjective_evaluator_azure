@@ -32,9 +32,9 @@ def spell_check(l):
     if wrd==TextBlob(wrd).correct():
       c+=1
   if c>=0.75*len(l):
-    return 0.1
+    return 1
   if c>0.5*len(l):
-    return 0.05
+    return 0.5
   else:
     return 0
 
@@ -57,8 +57,8 @@ def keyword_marks(model_ans,user_ans):
   for kw in user_ans_keywords:
     if 1-kw[1]>0.85:
       user_keywords.append(kw[0])
-  spell_marks = spell_check(user_keywords)
-  ratio = len(set(model_keywords).intersection(set(user_keywords)))/len(model_keywords)
+  spell_marks = 0.05*spell_check(user_keywords)
+  ratio = 0.1*len(set(model_keywords).intersection(set(user_keywords)))/len(model_keywords)
   return ratio,spell_marks
 
 def get_total(user_ans,model_ans):
