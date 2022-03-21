@@ -1,8 +1,8 @@
-from sre_parse import FLAGS
-import language_tool_python
-tool = language_tool_python.LanguageTool('en-US')
+'''import language_tool_python
+tool = language_tool_python.LanguageTool('en-US')'''
 import re
 import yake
+from textblob import TextBlob
 language = "en"
 max_ngram_size = 2
 deduplication_threshold = 0.2
@@ -19,12 +19,24 @@ print ("module %s loaded" % module_url)
 
 app = Flask(__name__)
 
-def grammer_marks(text):
+'''def grammer_marks(text):
   allowed_errors = len(re.split(r'[.!?]+', text))
   errors = len(tool.check(text))
   if errors>allowed_errors:
     return 0
-  return 1
+  return 1'''
+
+def spell_check(l):
+  c=0
+  for wrd in l:
+    if wrd==TextBlob(wrd).correct():
+      c+=1
+  if c>=0.75*len(l):
+    return 0.1
+  if c>0.5*len(l):
+    return 0.05
+  else:
+    return 0
 
 def embed(input):
   return model(input)
@@ -45,11 +57,16 @@ def keyword_marks(model_ans,user_ans):
   for kw in user_ans_keywords:
     if 1-kw[1]>0.85:
       user_keywords.append(kw[0])
+  spell_marks = spell_check(user_keywords)
   ratio = len(set(model_keywords).intersection(set(user_keywords)))/len(model_keywords)
-  return ratio
+  return ratio,spell_marks
 
 def get_total(user_ans,model_ans):
-  return (0.85*semantic_score(model_ans,user_ans)+0.1*keyword_marks(model_ans,user_ans)+0.05*grammer_marks(user_ans))
+  semantic_marks = 0.85*semantic_score(model_ans,user_ans)
+  keywrd_marks,spell_mark = keyword_marks(model_ans,user_ans)
+  print(semantic_marks,keywrd_marks,spell_mark)
+  return semantic_marks+keywrd_marks+spell_mark
+
 
 def preprocess(text):
   text = text.lower()
@@ -78,4 +95,4 @@ def home():
 
 
 if __name__=='__main__':
-    app.run(port=5000,host='0.0.0.0')
+  app.run()
