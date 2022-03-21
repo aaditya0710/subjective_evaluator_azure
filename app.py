@@ -60,7 +60,7 @@ def preprocess(text):
 def hello():
     return "hello world"  
 
-@app.route("/predict", methods=['GET'])
+@app.route("/predict", methods=['GET','POST'])
 def home():
   data = request.json['data']
   user_ans = data[0]["user_ans"]
