@@ -20,6 +20,7 @@ h5py==3.6.0
 idna==3.3
 importlib-metadata==4.11.3
 ipykernel==6.9.2
+gunicorn==19.9.0
 ipython==7.32.0
 itsdangerous==2.1.1
 jedi==0.18.1
