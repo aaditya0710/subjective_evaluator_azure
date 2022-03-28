@@ -52,7 +52,7 @@ def keyword_marks(model_ans,user_ans):
     if 1-kw[1]>0.85:
       model_keywords.append(kw[0])
   if len(model_keywords)==0:
-    return 1,1
+    return 0.05,0.05
 
   user_ans_keywords = custom_kw_extractor.extract_keywords(user_ans)
   user_keywords = []
