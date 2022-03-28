@@ -45,27 +45,37 @@ def semantic_score(model_ans,user_ans):
   return np.inner(embed([user_ans]),embed([model_ans]))[0][0]
 
 def keyword_marks(model_ans,user_ans):
+
   model_ans_keywords = custom_kw_extractor.extract_keywords(model_ans)
   model_keywords = []
   for kw in model_ans_keywords:
     if 1-kw[1]>0.85:
       model_keywords.append(kw[0])
   if len(model_keywords)==0:
-    return 1
+    return 1,1
+
   user_ans_keywords = custom_kw_extractor.extract_keywords(user_ans)
   user_keywords = []
   for kw in user_ans_keywords:
     if 1-kw[1]>0.85:
       user_keywords.append(kw[0])
-  spell_marks = 0.05*spell_check(user_keywords)
-  ratio = 0.1*len(set(model_keywords).intersection(set(user_keywords)))/len(model_keywords)
+  
+  spell_marks = 0.05 * spell_check(user_keywords)
+  ratio = 0.1*(len(set(model_keywords).intersection(set(user_keywords)))/len(model_keywords))
   return ratio,spell_marks
 
 def get_total(user_ans,model_ans):
+  if user_ans == " ":
+    return 0
+  if user_ans==model_ans:
+    return 1
   semantic_marks = 0.85*semantic_score(model_ans,user_ans)
   keywrd_marks,spell_mark = keyword_marks(model_ans,user_ans)
-  print(semantic_marks,keywrd_marks,spell_mark)
-  return semantic_marks+keywrd_marks+spell_mark
+  #print(semantic_marks,"+",keywrd_marks,"+",spell_mark)
+  tot = semantic_marks+keywrd_marks+spell_mark
+  if tot>1:
+    return 1
+  return round(tot,2)
 
 
 def preprocess(text):
