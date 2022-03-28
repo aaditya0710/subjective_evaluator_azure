@@ -19,13 +19,6 @@ print ("module %s loaded" % module_url)
 
 app = Flask(__name__)
 
-'''def grammer_marks(text):
-  allowed_errors = len(re.split(r'[.!?]+', text))
-  errors = len(tool.check(text))
-  if errors>allowed_errors:
-    return 0
-  return 1'''
-
 def spell_check(l):
   c=0
   for wrd in l:
